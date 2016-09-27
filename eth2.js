@@ -9,6 +9,8 @@ var j = 1
 var k = 1
 var i = 1
 var m = 0
+var port = 1000
+
 var pending = []
 
 storage.get("1a0f74a2-fe2a-4bd0-9663-f762c16c31a2").catch((data) => {
@@ -20,9 +22,9 @@ setInterval(() => {
 
 }, 100)
 
-const params = function(k, i, j, m) {
+const params = function(port, k, i, j, m) {
   return {
-    uri: `http://${k}.${i}.${j}.${m}:8545`,
+    uri: `http://${k}.${i}.${j}.${m}:${port}`,
 
     //uri: `http://54.218.109.153:8545`,
     method: 'POST',
@@ -30,19 +32,11 @@ const params = function(k, i, j, m) {
   }
 }
 
-getData(k, i, j, m, 20)
-getData(21, i, j, m, 40)
-getData(41, i, j, m, 60)
-getData(61, i, j, m, 80)
-getData(81, i, j, m, 100)
-getData(101, i, j, m, 120)
-getData(121, i, j, m, 140)
-getData(141, i, j, m, 160)
-getData(161, i, j, m, 180)
-getData(181, i, j, m, 200)
-getData(201, i, j, m, 220)
-getData(221, i, j, m, 240)
-getData(241, i, j, m, 255)
+//getData(k, i, j, m , 1000, 1000, 20)
+//getData(54, 218, 109, 153 , 1000, 1000, 20)
+//getData(106,184,3,183, 1000,1000,20)
+//getData(161,202,82,11, 1000, 1000,20)
+getData(59,147,62,153, 1000, 1000,20)
 
 function save() {
   console.log(pending);
@@ -60,9 +54,13 @@ function save() {
   }
 }
 
-function getData(v, k, i, j, m, limit) {
+function getData( k, i, j, m ,port,portinit ,limit) {
   setTimeout(function() {
-    m++;
+    port++
+    if (port == 65535){
+      port = portinit
+      m++
+    }
     if (m == data) {
       m = 0
       j++
@@ -72,20 +70,17 @@ function getData(v, k, i, j, m, limit) {
       i++
     }
     if (i == data) {
-      i = 0
+      j = 0
       k++
     }
-    if (k == data) {
+    if (k == data)
       k = 0
-      v++
-    }
-    if (k > limit)
-      return 0
-
-    getData(k, i, j, m, limit)
 
 
-    const p = new params(k, i, j, m)
+    getData(k, i, j, m,port, portinit, limit)
+
+
+    const p = new params(port, k, i, j, m)
       //console.log(p);
 
     rp(p).then((response) => {
@@ -97,6 +92,6 @@ function getData(v, k, i, j, m, limit) {
     })
 
     //data = web3.isConnected()
-    console.log(k, i, j, m)
-  }, 0)
+    console.log(k, i, j, m, port)
+  }, 20)
 }
